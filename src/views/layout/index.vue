@@ -1,17 +1,12 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    Layout
   </div>
 </template>
 
 <script>
-import { Button } from 'vant'
-
-import Vue from 'vue'
-
-Vue.use(Button)
 export default {
-
+  name: 'LayoutIndex'
 }
 </script>
 
