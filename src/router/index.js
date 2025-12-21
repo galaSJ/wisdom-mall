@@ -7,6 +7,10 @@ import Search from '@/views/search'
 import SearchList from '@/views/search/SearchList'
 import Pay from '@/views/pay'
 import Prodetail from '@/views/prodetail'
+import Cart from '@/views/layout/Cart.vue'
+import Category from '@/views/layout/Category.vue'
+import User from '@/views/layout/User.vue'
+import Home from '@/views/layout/Home.vue'
 
 Vue.use(VueRouter)
 
@@ -18,7 +22,26 @@ const routes = [
   },
   {
     path: '/',
-    component: Layout
+    component: Layout,
+    children: [
+      {
+        path: '/cart',
+        component: Cart
+      },
+      {
+        path: '/home',
+        component: Home
+      },
+      {
+        path: '/category',
+        component: Category
+      },
+      {
+        path: '/user',
+        component: User
+      }
+
+    ]
   },
   {
     path: '/myorder',
