@@ -36,12 +36,24 @@
   </div>
 </template>
 <script>
-import request from '@/utils/request'
+import { getPicCode } from '@/api/login'
 export default {
   name: 'loginPage',
+  data () {
+    return {
+      picUrl: '',
+      picKey: ''
+    }
+  },
   async created () {
-    const res = await request.get('/captcha/image')
-    console.log(res)
+    this.getPicCode()
+  },
+  methods: {
+    async getPicCode () {
+      const { data: { base64, key } } = await getPicCode()
+      this.picKey = key
+      this.picUrl = base64
+    }
   }
 }
 </script>
