@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <van-nav-bar title="会员登录" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar title="会员登录" left-arrow  @click-left="$router.go(-1)" />
     <div class="container">
       <div class="title">
         <h3>手机号登录</h3>
@@ -27,7 +27,7 @@
         </div>
         <div class="form-item">
           <input class="inp" placeholder="请输入短信验证码" type="text" />
-          <button>获取验证码</button>
+          <button @click="getCode()">{{totalSecond === second ? '获取验证码' : second + ''}}</button>
         </div>
       </div>
 
@@ -42,7 +42,11 @@ export default {
   data () {
     return {
       picUrl: '',
-      picKey: ''
+      picKey: '',
+      totalSecond: 60, // 倒计时总秒数
+      second: 60, // 倒计时秒数
+      timer: null // 定时器
+
     }
   },
   async created () {
@@ -53,8 +57,28 @@ export default {
       const { data: { base64, key } } = await getPicCode()
       this.picKey = key
       this.picUrl = base64
+    },
+    getCode () {
+      // 总秒数 === 秒数 && 定时器为空， 才开启定时器
+      if (this.totalSecond === this.second && !this.timer) {
+        this.timer = setInterval(() => {
+          this.second--
+          if (this.second <= 0) {
+            // 倒计时结束，重置定时器
+            clearInterval(this.timer)
+            this.timer = null
+            // 重置秒数
+            this.second = this.totalSecond = 60
+          }
+        }, 1000)
+      }
     }
+  },
+  destroyed () {
+    // 离开页面清除定时器
+    clearInterval(this.timer)
   }
+
 }
 </script>
 
