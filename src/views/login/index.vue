@@ -38,7 +38,7 @@
   </div>
 </template>
 <script>
-import { getPicCode } from '@/api/login'
+import { getMsgCode, getPicCode } from '@/api/login'
 export default {
   name: 'loginPage',
   data () {
@@ -74,9 +74,17 @@ export default {
       }
       return true
     },
-    getCode () {
+    async getCode () {
       // 校验短信验证码和图形验证码
       if (!this.validFn()) return
+      // 请求短信验证码
+      const res = await getMsgCode(this.picCode, this.picKey, this.mobile)
+      if (res.status !== 200) {
+        this.$toast('短信验证码获取失败')
+        return false
+      }
+      this.$toast('验证码已发送')
+
       // 总秒数 === 秒数 && 定时器为空， 才开启定时器
       if (this.totalSecond === this.second && !this.timer) {
         this.timer = setInterval(() => {
