@@ -14,6 +14,7 @@
             maxlength="11"
             placeholder="请输入手机号码"
             type="text"
+            v-model="mobile"
           />
         </div>
         <div class="form-item">
@@ -22,6 +23,7 @@
             maxlength="5"
             placeholder="请输入图形验证码"
             type="text"
+            v-model="picCode"
           />
           <img src="@/assets/code.png" alt="" />
         </div>
@@ -45,7 +47,9 @@ export default {
       picKey: '',
       totalSecond: 60, // 倒计时总秒数
       second: 60, // 倒计时秒数
-      timer: null // 定时器
+      timer: null, // 定时器
+      mobile: '', // 手机号码
+      picCode: '' // 图形验证码
 
     }
   },
@@ -58,7 +62,21 @@ export default {
       this.picKey = key
       this.picUrl = base64
     },
+    validFn () {
+      if (!/^1[3-9]\d{9}$/.test(this.mobile)) {
+        // vant组件轻提示
+        this.$toast('请输入正确的手机号码')
+        return false
+      }
+      if (!/^\w{4}$/.test(this.picCode)) {
+        this.$toast('请输入正确的验证码')
+        return false
+      }
+      return true
+    },
     getCode () {
+      // 校验短信验证码和图形验证码
+      if (!this.validFn()) return
       // 总秒数 === 秒数 && 定时器为空， 才开启定时器
       if (this.totalSecond === this.second && !this.timer) {
         this.timer = setInterval(() => {
