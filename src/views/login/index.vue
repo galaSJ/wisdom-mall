@@ -25,7 +25,7 @@
             type="text"
             v-model="picCode"
           />
-          <img src="@/assets/code.png" alt="" />
+          <img v-if="picUrl" :src="picUrl" alt="" @click="getPicCode()" />
         </div>
         <div class="form-item">
           <input class="inp" v-model="msgCode" placeholder="请输入短信验证码" type="text" />
@@ -63,6 +63,7 @@ export default {
       const { data: { base64, key } } = await getPicCode()
       this.picKey = key
       this.picUrl = base64
+      console.log(11)
     },
     validFn () {
       if (!/^1[3-9]\d{9}$/.test(this.mobile)) {
