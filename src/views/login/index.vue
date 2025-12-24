@@ -63,7 +63,6 @@ export default {
       const { data: { base64, key } } = await getPicCode()
       this.picKey = key
       this.picUrl = base64
-      console.log(11)
     },
     validFn () {
       if (!/^1[3-9]\d{9}$/.test(this.mobile)) {
