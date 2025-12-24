@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <van-nav-bar title="会员登录" left-arrow  @click-left="$router.go(-1)" />
+    <van-nav-bar title="会员登录" left-arrow @click-left="$router.go(-1)" />
     <div class="container">
       <div class="title">
         <h3>手机号登录</h3>
@@ -29,7 +29,12 @@
         </div>
         <div class="form-item">
           <input class="inp" placeholder="请输入短信验证码" type="text" />
-          <button @click="getCode()">{{totalSecond === second ? '获取验证码' : second + ''}}</button>
+          <button
+            :disabled="totalSecond !== second"
+            :class="{'un-active':totalSecond !== second}"
+            @click="getCode()">
+            {{ totalSecond === second ? "获取验证码" : "重新获取(" + second + ")秒"}}
+          </button>
         </div>
       </div>
 
@@ -50,7 +55,6 @@ export default {
       timer: null, // 定时器
       mobile: '', // 手机号码
       picCode: '' // 图形验证码
-
     }
   },
   async created () {
@@ -58,7 +62,9 @@ export default {
   },
   methods: {
     async getPicCode () {
-      const { data: { base64, key } } = await getPicCode()
+      const {
+        data: { base64, key }
+      } = await getPicCode()
       this.picKey = key
       this.picUrl = base64
     },
@@ -104,7 +110,6 @@ export default {
     // 离开页面清除定时器
     clearInterval(this.timer)
   }
-
 }
 </script>
 
@@ -151,6 +156,12 @@ export default {
       background-color: transparent;
       padding-right: 9px;
     }
+    .un-active{
+      color: #9e9e9e;
+    }
+    .active{
+      color: #cea26a;
+    }
   }
 
   .login-btn {
@@ -166,5 +177,6 @@ export default {
     justify-content: center;
     align-items: center;
   }
+
 }
 </style>
