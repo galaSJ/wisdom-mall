@@ -1,5 +1,6 @@
 // 基于axios二次封装请求模块
 import axios from 'axios'
+import { Toast } from 'vant'
 // 创建一个axios实例
 const instance = axios.create({
   // 配置基地址
@@ -23,7 +24,13 @@ instance.interceptors.response.use(function (response) {
   // 对响应数据做点什么
 
   // axios默认包装了一层data,解开一层
-  return response.data
+  const res = response.data
+  // 状态码不等于200 抛异常
+  if (res.status !== 200) {
+    Toast(res.message)
+    return Promise.reject(res.message)
+  }
+  return res
 }, function (error) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么

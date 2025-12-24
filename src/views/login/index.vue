@@ -25,7 +25,7 @@
             type="text"
             v-model="picCode"
           />
-          <img src="@/assets/code.png" alt="" />
+          <img v-if="picUrl" :src="picUrl" alt="" @click="getPicCode()" />
         </div>
         <div class="form-item">
           <input class="inp" placeholder="请输入短信验证码" type="text" />
@@ -38,12 +38,12 @@
         </div>
       </div>
 
-      <div class="login-btn">登录</div>
+      <div class="login-btn" @click="login()">登录</div>
     </div>
   </div>
 </template>
 <script>
-import { getMsgCode, getPicCode } from '@/api/login'
+import { codeLogin, getMsgCode, getPicCode } from '@/api/login'
 export default {
   name: 'loginPage',
   data () {
@@ -54,11 +54,18 @@ export default {
       second: 60, // 倒计时秒数
       timer: null, // 定时器
       mobile: '', // 手机号码
+<<<<<<< HEAD
       picCode: '' // 图形验证码
+=======
+      picCode: '', // 图形验证码
+      msgCode: '' // 短信验证码
+
+>>>>>>> e5b164d5c948fea6a0f0efa4bd3b579e9f3c1f75
     }
   },
-  async created () {
+  created () {
     this.getPicCode()
+    console.log('17702020303')
   },
   methods: {
     async getPicCode () {
@@ -103,6 +110,21 @@ export default {
             this.second = this.totalSecond = 60
           }
         }, 1000)
+      }
+    },
+    async login () {
+      // 基础判断
+      if (!this.validFn()) return false
+      if (!/^\d{6}$/.test(this.msgCode)) {
+        this.$toast('请输入正确验证码')
+        return false
+      }
+      try {
+        await codeLogin(this.msgCode, this.mobile)
+        this.$router.push({ path: '/' })
+        this.$toast('登录成功')
+      } catch (error) {
+        this.$toast.fail('登录失败, 请重试')
       }
     }
   },
