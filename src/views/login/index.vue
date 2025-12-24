@@ -25,7 +25,7 @@
             type="text"
             v-model="picCode"
           />
-          <img src="@/assets/code.png" alt="" />
+          <img src="@/assets/code.png" alt=""/>
         </div>
         <div class="form-item">
           <input class="inp" v-model="msgCode" placeholder="请输入短信验证码" type="text" />
