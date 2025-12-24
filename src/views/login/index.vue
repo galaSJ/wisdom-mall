@@ -28,7 +28,7 @@
           <img v-if="picUrl" :src="picUrl" alt="" @click="getPicCode()" />
         </div>
         <div class="form-item">
-          <input class="inp" placeholder="请输入短信验证码" type="text" />
+          <input class="inp" v-model="msgCode" placeholder="请输入短信验证码" type="text" />
           <button
             :disabled="totalSecond !== second"
             :class="{'un-active':totalSecond !== second}"
@@ -54,13 +54,9 @@ export default {
       second: 60, // 倒计时秒数
       timer: null, // 定时器
       mobile: '', // 手机号码
-<<<<<<< HEAD
-      picCode: '' // 图形验证码
-=======
       picCode: '', // 图形验证码
       msgCode: '' // 短信验证码
 
->>>>>>> e5b164d5c948fea6a0f0efa4bd3b579e9f3c1f75
     }
   },
   created () {
