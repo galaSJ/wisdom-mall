@@ -53,7 +53,7 @@ const routes = [
     component: Search
   },
   {
-    path: '/searchList',
+    path: '/searchlist',
     component: SearchList
   },
   {

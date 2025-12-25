@@ -27,3 +27,23 @@ export const setInfo = (info) => {
 export const delInfo = () => {
   localStorage.removeItem(INFO_KEY)
 }
+
+// 搜索历史
+const SEARCH_HISTORY_KEY = 'wisdom_mall_serach_history'
+
+/**
+ * 获取本地搜索历史列表
+ * @returns {Array} 搜索历史列表
+ */
+export const getSearchHistory = () => {
+  const result = localStorage.getItem(SEARCH_HISTORY_KEY)
+  return result ? JSON.parse(result) : []
+}
+
+/**
+ * 更新本地搜索历史列表
+ * @param {Array} arr 搜索历史列表
+ */
+export const setSearchHistory = (arr) => {
+  localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(arr))
+}
