@@ -116,7 +116,9 @@ export default {
         return false
       }
       try {
-        await codeLogin(this.msgCode, this.mobile)
+        const res = await codeLogin(this.msgCode, this.mobile)
+        // 用户信息存入vuex
+        this.$store.commit('user/setUserInfo', res.data)
         this.$router.push({ path: '/' })
         this.$toast('登录成功')
       } catch (error) {
