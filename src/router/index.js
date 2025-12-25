@@ -11,6 +11,7 @@ import Cart from '@/views/layout/Cart.vue'
 import Category from '@/views/layout/Category.vue'
 import User from '@/views/layout/User.vue'
 import Home from '@/views/layout/Home.vue'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -70,4 +71,28 @@ const router = new VueRouter({
   routes
 })
 
+// 需要权限认证的路由路径
+const authPath = [
+  '/pay',
+  '/myorder'
+]
+
+// 路由前置守卫认证
+router.beforeEach((to, form, next) => {
+  // console.log(to, form, next)
+
+  // 获取token
+  const token = store.getters.token
+  // 放行非权限页
+
+  if (!authPath.includes(to.path)) {
+    next()
+    return
+  }
+  if (!token) {
+    next('/login')
+    return
+  }
+  next()
+})
 export default router

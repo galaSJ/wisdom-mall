@@ -7,6 +7,10 @@ export default new Vuex.Store({
   state: {
   },
   getters: {
+    // 获取token
+    token (state) {
+      return state.user.userInfo.token
+    }
   },
   mutations: {
   },
