@@ -2,20 +2,24 @@
   <div class="search">
     <van-nav-bar title="商品搜索" left-arrow @click-left="$router.go(-1)" />
 
-    <van-search v-model="searchKey" show-action placeholder="请输入搜索关键词" clearable>
+    <van-search v-model.trim="searchKey" show-action placeholder="请输入搜索关键词" clearable>
       <template #action>
         <div @click="getSearch(searchKey)" >搜索</div>
       </template>
     </van-search>
 
     <!-- 搜索历史 -->
-    <div class="search-history" v-if="searchHistory.length > 0">
+    <div class="search-history" v-if="filterSearchHistory.length > 0">
       <div class="title">
         <span>最近搜索</span>
         <van-icon @click="clearSearchHistory()" name="delete-o" size="16" />
       </div>
       <div class="list" >
-        <div class="list-item" @click="getSearch(item)" v-for="item in searchHistory" :key="item">{{item}}</div>
+        <div class="list-item"
+          @click="getSearch(item)"
+          v-for="item in filterSearchHistory"
+          :key="item"
+        >{{item}}</div>
       </div>
     </div>
   </div>
@@ -31,6 +35,11 @@ export default {
       searchHistory: getSearchHistory()
     }
   },
+  computed: {
+    filterSearchHistory () {
+      return this.searchHistory.filter(item => item)
+    }
+  },
   methods: {
     // 获取搜索历史列表
     getSearch (key) {
@@ -40,10 +49,13 @@ export default {
         // 有记录，删除原来的
         this.searchHistory.splice(index, 1)
       }
-      // 更新到第一位
-      this.searchHistory.unshift(key)
-      // 本地存储
-      setSearchHistory(this.searchHistory)
+      // 关键字不为空则记录
+      if (this.searchHistory) {
+        // 更新到第一位
+        this.searchHistory.unshift(key)
+        // 本地存储
+        setSearchHistory(this.searchHistory)
+      }
       // 路由跳转
       this.$router.push('/searchlist?search=' + key)
     },
