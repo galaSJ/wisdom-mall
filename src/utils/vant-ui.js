@@ -11,7 +11,8 @@ import {
   SwipeItem,
   Grid,
   GridItem,
-  Icon
+  Icon,
+  Rate
 } from 'vant'
 
 Vue.use(Tabbar)
@@ -24,3 +25,4 @@ Vue.use(SwipeItem)
 Vue.use(Grid)
 Vue.use(GridItem)
 Vue.use(Icon)
+Vue.use(Rate)

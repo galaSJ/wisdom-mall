@@ -26,3 +26,36 @@ export const getProduct = (obj) => {
     }
   })
 }
+
+/**
+ * 获取商品详情
+ * * @param {string|number} goodsId - 商品唯一标识 ID (必传)
+ * @returns {Promise<any>} 返回包含商品详细信息的 Promise 对象
+ * * @example
+ * const detail = await getProductDetail('10001');
+ */
+export const getProductDetail = (goodsId) => {
+  return request.get('/goods/detail', {
+    params: {
+      goodsId
+    }
+  })
+}
+
+/**
+ * 获取商品评价列表
+ * * @param {string|number} goodsId - 商品 ID
+ * @param {number} [limit=2] - 限制显示的评价条数，默认为 2 条
+ * @returns {Promise<any>} 返回包含评价列表数据的 Promise 对象
+ * * @example
+ * // 获取商品 ID 为 1001 的前 10 条评价
+ * getComments(1001, 10)
+ */
+export const getComments = (goodsId, limit) => {
+  return request.get('/comment/listRows', {
+    params: {
+      goodsId,
+      limit
+    }
+  })
+}
