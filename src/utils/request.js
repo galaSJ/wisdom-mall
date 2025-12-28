@@ -1,4 +1,5 @@
 // 基于axios二次封装请求模块
+import store from '@/store'
 import axios from 'axios'
 import { Toast } from 'vant'
 // 创建一个axios实例
@@ -12,6 +13,13 @@ const instance = axios.create({
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
   // 在发送请求之前做些什么
+  // 添加token
+  const token = store.getters.token
+  if (token) {
+    config.headers['Access-Token'] = token
+    config.headers.platform = 'H5'
+  }
+
   // 开启loading效果
   Toast.loading({
     message: '请求中...',

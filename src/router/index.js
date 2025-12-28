@@ -24,6 +24,8 @@ const routes = [
   {
     path: '/',
     component: Layout,
+    // 重定向到home
+    redirect: '/home',
     children: [
       {
         path: '/cart',
