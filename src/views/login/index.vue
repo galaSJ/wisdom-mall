@@ -119,7 +119,9 @@ export default {
         const res = await codeLogin(this.msgCode, this.mobile)
         // 用户信息存入vuex
         this.$store.commit('user/setUserInfo', res.data)
-        this.$router.push({ path: '/' })
+        // 获取跳转路径,没有则跳转到根路径
+        const url = this.$route.query.backUrl || '/'
+        this.$router.push({ path: url })
         this.$toast('登录成功')
       } catch (error) {
         this.$toast.fail('登录失败, 请重试')

@@ -91,8 +91,8 @@
         <van-icon name="shopping-cart-o" />
         <span>购物车</span>
       </div>
-      <div class="btn-add" @click="addFn()">加入购物车</div>
-      <div class="btn-buy" @click="buyFn()">立刻购买</div>
+      <div class="btn-add" @click="shoppingMode('cart')">加入购物车</div>
+      <div class="btn-buy" @click="shoppingMode('buyNow')">立刻购买</div>
     </div>
     <!-- 弹层 -->
     <van-action-sheet
@@ -123,7 +123,7 @@
           <CountBox v-model="addCount"></CountBox>
         </div>
         <div class="showbtn" v-if="detail.stock_total > 0">
-          <div class="btn" v-if="mode === 'cart'">加入购物车</div>
+          <div class="btn" @click="addCart" v-if="mode === 'cart'">加入购物车</div>
           <div class="btn now" v-else>立刻购买</div>
         </div>
         <div class="btn-none" v-else>该商品已抢完</div>
@@ -136,6 +136,7 @@
 import { getComments, getProductDetail } from '@/api/product'
 import defaultAvatar from '@/assets/default-avatar.png'
 import CountBox from '@/components/CountBox.vue'
+import { Dialog } from 'vant'
 export default {
   name: 'ProDetail',
   data () {
@@ -182,13 +183,36 @@ export default {
       this.commentList = list
       this.total = total
     },
-    addFn () {
-      this.mode = 'cart'
+    // 弹层标题显示
+    shoppingMode (mode) {
+      this.mode = mode
       this.showPannel = true
     },
-    buyFn () {
-      this.mode = 'buyNow'
-      this.showPannel = true
+    // 加入购物车
+    addCart () {
+      // 判断token
+      if (!this.$store.getters.token) {
+        Dialog.confirm({
+          message: '加入购物车需要先登录',
+          title: '温馨提示',
+          confirmButtonText: '登录',
+          cancelButtonText: '取消'
+        }).then(() => {
+          // 跳转登录
+          this.$router.replace({
+            path: '/login',
+            query: {
+              // 获取完整路径
+              // 登录成功后,跳转回来使用
+              backUrl: this.$route.fullPath
+            }
+          })
+        }).catch(() => {
+
+        })
+        return false
+      }
+      console.log('正常')
     }
   },
   components: {
