@@ -12,7 +12,8 @@ import {
   Grid,
   GridItem,
   Icon,
-  Rate
+  Rate,
+  ActionSheet
 } from 'vant'
 
 Vue.use(Tabbar)
@@ -26,3 +27,4 @@ Vue.use(Grid)
 Vue.use(GridItem)
 Vue.use(Icon)
 Vue.use(Rate)
+Vue.use(ActionSheet)

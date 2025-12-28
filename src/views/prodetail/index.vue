@@ -1,6 +1,11 @@
 <template>
   <div class="prodetail">
-    <van-nav-bar fixed title="商品详情页" left-arrow @click-left="$router.go(-1)" />
+    <van-nav-bar
+      fixed
+      title="商品详情页"
+      left-arrow
+      @click-left="$router.go(-1)"
+    />
 
     <van-swipe :autoplay="3000" @change="onChange">
       <van-swipe-item v-for="image in images" :key="image.file_id">
@@ -8,7 +13,9 @@
       </van-swipe-item>
 
       <template #indicator>
-        <div class="custom-indicator">{{ current + 1 }} / {{ images.length }}</div>
+        <div class="custom-indicator">
+          {{ current + 1 }} / {{ images.length }}
+        </div>
       </template>
     </van-swipe>
 
@@ -16,13 +23,13 @@
     <div class="info">
       <div class="title">
         <div class="price">
-          <span class="now">￥{{detail.goods_price_min}}</span>
-          <span class="oldprice">￥{{detail.goods_price_max}}</span>
+          <span class="now">￥{{ detail.goods_price_min }}</span>
+          <span class="oldprice">￥{{ detail.goods_price_max }}</span>
         </div>
-        <div class="sellcount">已售{{detail.goods_sales}}件</div>
+        <div class="sellcount">已售{{ detail.goods_sales }}件</div>
       </div>
       <div class="msg text-ellipsis-2">
-        {{detail.goods_name}}
+        {{ detail.goods_name }}
       </div>
 
       <div class="service">
@@ -39,31 +46,40 @@
     <!-- 商品评价 -->
     <div class="comment">
       <div class="comment-title">
-        <div class="left">商品评价 ({{total}}条)</div>
-        <div class="right">查看更多 <van-icon name="arrow" /> </div>
+        <div class="left">商品评价 ({{ total }}条)</div>
+        <div class="right">查看更多 <van-icon name="arrow" /></div>
       </div>
       <div class="comment-list">
-        <div class="comment-item" v-for="item in commentList" :key="item.comment_id">
+        <div
+          class="comment-item"
+          v-for="item in commentList"
+          :key="item.comment_id"
+        >
           <div class="top">
             <!-- 头像 没有头像使用默认头像 -->
-            <img :src="item.user.avatar_url || defaultAvatar" alt="">
-            <div class="name">{{item.nick_name}}</div>
+            <img :src="item.user.avatar_url || defaultAvatar" alt="" />
+            <div class="name">{{ item.nick_name }}</div>
             <!-- 商品评价分数, 总星数= 10 / 2 = 5 -->
-            <van-rate :size="16" :value="item.score / 2" color="#ffd21e" void-icon="star" void-color="#eee"/>
+            <van-rate
+              :size="16"
+              :value="item.score / 2"
+              color="#ffd21e"
+              void-icon="star"
+              void-color="#eee"
+            />
           </div>
           <div class="content">
-            {{item.content}}
+            {{ item.content }}
           </div>
           <div class="time">
-            {{item.create_time}}
+            {{ item.create_time }}
           </div>
         </div>
       </div>
     </div>
 
     <!-- 商品描述 -->
-    <div class="desc" v-html="detail.content">
-    </div>
+    <div class="desc" v-html="detail.content"></div>
 
     <!-- 底部 -->
     <div class="footer">
@@ -75,15 +91,51 @@
         <van-icon name="shopping-cart-o" />
         <span>购物车</span>
       </div>
-      <div class="btn-add">加入购物车</div>
-      <div class="btn-buy">立刻购买</div>
+      <div class="btn-add" @click="addFn()">加入购物车</div>
+      <div class="btn-buy" @click="buyFn()">立刻购买</div>
     </div>
+    <!-- 弹层 -->
+    <van-action-sheet
+      v-model="showPannel"
+      :title="mode === 'cart' ? '加入购物车' : '立刻购买'"
+    >
+      <div class="product">
+        <div class="product-title">
+          <div class="left">
+            <img
+              :src="detail.goods_image"
+              alt=""
+            />
+          </div>
+          <div class="right">
+            <div class="price">
+              <span>¥</span>
+              <span class="nowprice">{{detail.goods_price_min}}</span>
+            </div>
+            <div class="count">
+              <span>库存</span>
+              <span>{{detail.stock_total}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="num-box">
+          <span>数量</span>
+          <CountBox v-model="addCount"></CountBox>
+        </div>
+        <div class="showbtn" v-if="detail.stock_total > 0">
+          <div class="btn" v-if="mode === 'cart'">加入购物车</div>
+          <div class="btn now" v-else>立刻购买</div>
+        </div>
+        <div class="btn-none" v-else>该商品已抢完</div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
 import { getComments, getProductDetail } from '@/api/product'
 import defaultAvatar from '@/assets/default-avatar.png'
+import CountBox from '@/components/CountBox.vue'
 export default {
   name: 'ProDetail',
   data () {
@@ -93,7 +145,10 @@ export default {
       detail: {}, // 商品详情
       commentList: [], // 评论列表
       total: '', // 评论总数
-      defaultAvatar: defaultAvatar // 默认头像
+      defaultAvatar: defaultAvatar, // 默认头像
+      showPannel: false, // 弹层唤起
+      mode: '', // 购物模式
+      addCount: 1 // 购物商品数量
     }
   },
   created () {
@@ -112,18 +167,34 @@ export default {
     },
     // 获取商品详情数据
     async getDetail () {
-      const { data: { detail } } = await getProductDetail(this.getGoodsId)
+      const {
+        data: { detail }
+      } = await getProductDetail(this.getGoodsId)
       this.images = detail.goods_images
       this.detail = detail
-      console.log(detail)
+      // console.log(detail)
     },
     // 获取商品评论数据
     async getComment () {
-      const { data: { list, total } } = await getComments(this.getGoodsId, 3)
+      const {
+        data: { list, total }
+      } = await getComments(this.getGoodsId, 3)
       this.commentList = list
       this.total = total
+    },
+    addFn () {
+      this.mode = 'cart'
+      this.showPannel = true
+    },
+    buyFn () {
+      this.mode = 'buyNow'
+      this.showPannel = true
     }
+  },
+  components: {
+    CountBox
   }
+
 }
 </script>
 
@@ -151,7 +222,7 @@ export default {
     overflow: scroll;
     ::v-deep img {
       display: block;
-      width: 100%!important;
+      width: 100% !important;
     }
   }
   .info {
@@ -243,7 +314,8 @@ export default {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    .icon-home, .icon-cart {
+    .icon-home,
+    .icon-cart {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -272,5 +344,52 @@ export default {
 
 .tips {
   padding: 10px;
+}
+.product {
+  .product-title {
+    display: flex;
+    .left {
+      img {
+        width: 90px;
+        height: 90px;
+      }
+      margin: 10px;
+    }
+    .right {
+      flex: 1;
+      padding: 10px;
+      .price {
+        font-size: 14px;
+        color: #fe560a;
+        .nowprice {
+          font-size: 24px;
+          margin: 0 5px;
+        }
+      }
+    }
+  }
+
+  .num-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    align-items: center;
+  }
+
+  .btn, .btn-none {
+    height: 40px;
+    line-height: 40px;
+    margin: 20px;
+    border-radius: 20px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 148, 2);
+  }
+  .btn.now {
+    background-color: #fe5630;
+  }
+  .btn-none {
+    background-color: #cccccc;
+  }
 }
 </style>
