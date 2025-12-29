@@ -32,7 +32,7 @@
     </div>
 
     <div class="footer-fixed">
-      <div  class="all-check">
+      <div @click="toggleAllCheck" class="all-check">
         <van-checkbox :value="isToggleCheck" icon-size="18"></van-checkbox>
         全选
       </div>
@@ -65,8 +65,14 @@ export default {
     ...mapGetters('cart', ['isToggleCheck'])
   },
   methods: {
+    // 单选
     toggleCheck (goodsId) {
       this.$store.commit('cart/toggleCheck', goodsId)
+    },
+    // 全选
+    toggleAllCheck () {
+      // 把全选框状态取反
+      this.$store.commit('cart/toggleAllCheck', !this.isToggleCheck)
     }
   }
 }

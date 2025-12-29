@@ -17,6 +17,10 @@ export default {
     toggleCheck (state, goodsId) {
       const goods = state.cartList.find(item => item.goods_id === goodsId)
       goods.isChecked = !goods.isChecked
+    },
+    // 全选框状态切换
+    toggleAllCheck (state, flag) {
+      state.cartList.forEach(item => { item.isChecked = flag })
     }
   },
   actions: {
