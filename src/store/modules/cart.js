@@ -12,9 +12,15 @@ export default {
     // 设置购物车列表
     setCartList (state, newList) {
       state.cartList = newList
+    },
+    // 切换购物车商品复选框状态
+    toggleCheck (state, goodsId) {
+      const goods = state.cartList.find(item => item.goods_id === goodsId)
+      goods.isChecked = !goods.isChecked
     }
   },
   actions: {
+    // 请求购物车数据
     async fetchCartList (context) {
       const { data: { list } } = await getCartList()
       // 添加一个选中状态
