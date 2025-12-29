@@ -31,6 +31,11 @@ export default {
       context.commit('setCartList', list)
       console.log(list)
     }
+  },
+  getters: {
+    isToggleCheck (state) {
+      return state.cartList.every(item => item.isChecked)
+    }
   }
 
 }

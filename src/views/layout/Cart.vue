@@ -33,7 +33,7 @@
 
     <div class="footer-fixed">
       <div  class="all-check">
-        <van-checkbox  icon-size="18"></van-checkbox>
+        <van-checkbox :value="isToggleCheck" icon-size="18"></van-checkbox>
         全选
       </div>
 
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'CartPage',
   created () {
@@ -61,7 +61,8 @@ export default {
     isLogin () {
       return this.$store.getters.token
     },
-    ...mapState('cart', ['cartList'])
+    ...mapState('cart', ['cartList']),
+    ...mapGetters('cart', ['isToggleCheck'])
   },
   methods: {
     toggleCheck (goodsId) {
