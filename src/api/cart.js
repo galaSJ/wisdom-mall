@@ -18,3 +18,11 @@ export const addCart = (goodsId, goodsNum, goodsSkuId) => {
     goodsSkuId
   })
 }
+
+/**
+ * 获取购物车列表数据
+ * * @returns {Promise<any>} 返回包含购物车商品数组及汇总信息（如总价、总数）的 Promise 对象
+ */
+export const getCartList = () => {
+  return request.get('/cart/list')
+}

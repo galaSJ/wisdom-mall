@@ -14,7 +14,8 @@ import {
   Icon,
   Rate,
   ActionSheet,
-  Dialog
+  Dialog,
+  Checkbox
 } from 'vant'
 
 Vue.use(Tabbar)
@@ -30,3 +31,4 @@ Vue.use(Icon)
 Vue.use(Rate)
 Vue.use(ActionSheet)
 Vue.use(Dialog)
+Vue.use(Checkbox)
