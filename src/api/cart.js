@@ -26,3 +26,23 @@ export const addCart = (goodsId, goodsNum, goodsSkuId) => {
 export const getCartList = () => {
   return request.get('/cart/list')
 }
+
+/**
+ * 更新购物车商品数量
+ * * @param {Object} updateGoodsObj - 更新参数对象
+ * @param {string|number} updateGoodsObj.goodsId - 商品 ID
+ * @param {number} updateGoodsObj.goodsNum - 更新后的商品数量
+ * @param {string|number} updateGoodsObj.goodsSkuId - 商品规格 ID
+ * @returns {Promise<any>} 返回包含操作结果的 Promise 对象
+ * * @example
+ * changCount({
+ * goodsId: 1001,
+ * goodsNum: 5,
+ * goodsSkuId: 500
+ * })
+ */
+export const changCount = (updateGoodsObj) => {
+  return request.post('/cart/update', {
+    ...updateGoodsObj
+  })
+}

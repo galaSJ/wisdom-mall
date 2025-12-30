@@ -22,9 +22,7 @@
           <span class="bottom">
             <div class="price">¥ <span>{{item.goods.goods_price_min}}</span></div>
             <div class="count-box">
-              <button class="minus">-</button>
-              <input class="inp" :value="item.goods_num" type="text" readonly>
-              <button class="add">+</button>
+              <CountBox @input="value => changCount(item.goods_id,value,item.goods_sku_id)" :value="item.goods_num"></CountBox>
             </div>
           </span>
         </div>
@@ -51,6 +49,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
+import CountBox from '@/components/CountBox.vue'
 export default {
   name: 'CartPage',
   created () {
@@ -73,7 +72,15 @@ export default {
     toggleAllCheck () {
       // 把全选框状态取反
       this.$store.commit('cart/toggleAllCheck', !this.isToggleCheck)
+    },
+    // 更改商品数量
+    changCount (goodsId, goodsNum, goodsSkuId) {
+      console.log(goodsId, goodsNum, goodsSkuId)
+      this.$store.dispatch('cart/changCountAction', { goodsId, goodsNum, goodsSkuId })
     }
+  },
+  components: {
+    CountBox
   }
 }
 </script>

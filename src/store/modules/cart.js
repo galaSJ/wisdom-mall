@@ -1,4 +1,4 @@
-import { getCartList } from '@/api/cart'
+import { getCartList, changCount } from '@/api/cart'
 
 export default {
   namespaced: true,
@@ -21,6 +21,11 @@ export default {
     // 全选框状态切换
     toggleAllCheck (state, flag) {
       state.cartList.forEach(item => { item.isChecked = flag })
+    },
+    // 更新购物车商品数量
+    changCount (state, { goodsNum, goodsId }) {
+      const goods = state.cartList.find(item => item.goods_id === goodsId)
+      goods.goods_num = goodsNum
     }
   },
   actions: {
@@ -34,7 +39,15 @@ export default {
       })
       context.commit('setCartList', list)
       console.log(list)
+    },
+    // 更新购物车商品数量
+    async changCountAction (context, { goodsId, goodsNum, goodsSkuId }) {
+      // 本地更新
+      context.commit('changCount', { goodsId, goodsNum })
+      // 请求接口更新
+      await changCount({ goodsId, goodsNum, goodsSkuId })
     }
+
   },
   getters: {
     isToggleCheck (state) {
