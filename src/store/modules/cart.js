@@ -1,4 +1,4 @@
-import { getCartList, changCount } from '@/api/cart'
+import { getCartList, changCount, delSelectGoods } from '@/api/cart'
 
 export default {
   namespaced: true,
@@ -45,6 +45,16 @@ export default {
       context.commit('changCount', { goodsId, goodsNum })
       // 请求接口更新
       await changCount({ goodsId, goodsNum, goodsSkuId })
+    },
+    async removeSelectGoods (context) {
+      // 获取选中的列表
+      const selectList = context.getters.selectGoodsList
+      // 获取id
+      const cartIds = selectList.map(item => +item.id)
+      // 请求接口删除
+      await delSelectGoods(cartIds)
+      // 重新拉去购物车数据
+      context.dispatch('fetchCartList')
     }
 
   },

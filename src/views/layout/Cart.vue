@@ -5,8 +5,7 @@
     <div class="cart-title">
       <span class="all">共<i>{{cartTotal}}</i>件商品</span>
       <span class="edit" @click="isEdit = !isEdit">
-        <van-icon name="edit" />
-        编辑
+        <van-icon :name="isEdit ? 'close' : 'edit'" /> {{isEdit ? '取消' : '编辑'}}
       </span>
     </div>
 
@@ -41,7 +40,7 @@
           <span>¥ <i class="totalPrice">{{selectGoodsPrice}}</i></span>
         </div>
         <div v-if="!isEdit" :class="{disabled: selectGoodsCount === 0}" class="goPay">结算({{selectGoodsCount}})</div>
-        <div v-else :class="{disabled: selectGoodsCount === 0}" class="delete">删除</div>
+        <div v-else @click="handleDel" :class="{disabled: selectGoodsCount === 0}" class="delete">删除</div>
       </div>
     </div>
   </div>
@@ -81,6 +80,12 @@ export default {
     // 更改商品数量
     changCount (goodsId, goodsNum, goodsSkuId) {
       this.$store.dispatch('cart/changCountAction', { goodsId, goodsNum, goodsSkuId })
+    },
+    handleDel () {
+      if (this.selectGoodsCount === 0) return false
+      this.$store.dispatch('cart/removeSelectGoods')
+      // 重置按钮状态
+      this.isEdit = false
     }
   },
   watch: {

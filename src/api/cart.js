@@ -46,3 +46,19 @@ export const changCount = (updateGoodsObj) => {
     ...updateGoodsObj
   })
 }
+
+/**
+ * 删除购物车中的商品
+ * * @param {Array<string|number>} cartIds - 购物车记录 ID 数组
+ * @returns {Promise<any>} 返回包含操作结果的 Promise 对象
+ * * @example
+ * // 删除单个商品
+ * delSelectGoods([101])
+ * // 批量删除多个商品
+ * delSelectGoods([101, 102, 105])
+ */
+export const delSelectGoods = (cartIds) => {
+  return request.post('/cart/clear', {
+    cartIds: cartIds
+  })
+}
