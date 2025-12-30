@@ -4,7 +4,7 @@
     <!-- 购物车开头 -->
     <div class="cart-title">
       <span class="all">共<i>{{cartTotal}}</i>件商品</span>
-      <span class="edit">
+      <span class="edit" @click="isEdit = !isEdit">
         <van-icon name="edit" />
         编辑
       </span>
@@ -40,8 +40,8 @@
           <span>合计：</span>
           <span>¥ <i class="totalPrice">{{selectGoodsPrice}}</i></span>
         </div>
-        <div v-if="true" class="goPay">结算({{selectGoodsCount}})</div>
-        <div v-else class="delete">删除</div>
+        <div v-if="!isEdit" :class="{disabled: selectGoodsCount === 0}" class="goPay">结算({{selectGoodsCount}})</div>
+        <div v-else :class="{disabled: selectGoodsCount === 0}" class="delete">删除</div>
       </div>
     </div>
   </div>
@@ -52,6 +52,11 @@ import { mapGetters, mapState } from 'vuex'
 import CountBox from '@/components/CountBox.vue'
 export default {
   name: 'CartPage',
+  data () {
+    return {
+      isEdit: false // 编辑按钮状态
+    }
+  },
   created () {
     // 登录后请求
     if (this.isLogin) this.$store.dispatch('cart/fetchCartList')
@@ -76,6 +81,12 @@ export default {
     // 更改商品数量
     changCount (goodsId, goodsNum, goodsSkuId) {
       this.$store.dispatch('cart/changCountAction', { goodsId, goodsNum, goodsSkuId })
+    }
+  },
+  watch: {
+    // 编辑状态取消商品全选,非编辑状态全选
+    isEdit (value) {
+      value ? this.$store.commit('cart/toggleAllCheck', false) : this.$store.commit('cart/toggleAllCheck', true)
     }
   },
   components: {
