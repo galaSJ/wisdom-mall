@@ -1,49 +1,60 @@
 <template>
   <div class="cart">
-    <van-nav-bar title="购物车" fixed />
-    <!-- 购物车开头 -->
-    <div class="cart-title">
-      <span class="all">共<i>{{cartTotal}}</i>件商品</span>
-      <span class="edit" @click="isEdit = !isEdit">
-        <van-icon :name="isEdit ? 'close' : 'edit'" /> {{isEdit ? '取消' : '编辑'}}
-      </span>
-    </div>
-
-    <!-- 购物车列表 -->
-    <div class="cart-list">
-      <div class="cart-item" v-for="item in cartList" :key="item.goods_id">
-        <van-checkbox @click="toggleCheck(item.goods_id)" :value="item.isChecked"></van-checkbox>
-        <div class="show">
-          <img :src="item.goods.goods_image" alt="">
-        </div>
-        <div class="info">
-          <span class="tit text-ellipsis-2">{{item.goods.goods_name}}</span>
-          <span class="bottom">
-            <div class="price">¥ <span>{{item.goods.goods_price_min}}</span></div>
-            <div class="count-box">
-              <CountBox @input="value => changCount(item.goods_id,value,item.goods_sku_id)" :value="item.goods_num"></CountBox>
-            </div>
+    <div class="cart-box" v-if="isLogin && cartList.length > 0">
+        <van-nav-bar title="购物车" fixed />
+        <!-- 购物车开头 -->
+        <div class="cart-title">
+          <span class="all">共<i>{{cartTotal}}</i>件商品</span>
+          <span class="edit" @click="isEdit = !isEdit">
+            <van-icon :name="isEdit ? 'close' : 'edit'" /> {{isEdit ? '取消' : '编辑'}}
           </span>
         </div>
-      </div>
+
+        <!-- 购物车列表 -->
+        <div class="cart-list">
+          <div class="cart-item" v-for="item in cartList" :key="item.goods_id">
+            <van-checkbox @click="toggleCheck(item.goods_id)" :value="item.isChecked"></van-checkbox>
+            <div class="show">
+              <img :src="item.goods.goods_image" alt="">
+            </div>
+            <div class="info">
+              <span class="tit text-ellipsis-2">{{item.goods.goods_name}}</span>
+              <span class="bottom">
+                <div class="price">¥ <span>{{item.goods.goods_price_min}}</span></div>
+                <div class="count-box">
+                  <CountBox @input="value => changCount(item.goods_id,value,item.goods_sku_id)" :value="item.goods_num"></CountBox>
+                </div>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="footer-fixed">
+          <div @click="toggleAllCheck" class="all-check">
+            <van-checkbox :value="isToggleCheck" icon-size="18"></van-checkbox>
+            全选
+          </div>
+
+          <div class="all-total">
+            <div class="price">
+              <span>合计：</span>
+              <span>¥ <i class="totalPrice">{{selectGoodsPrice}}</i></span>
+            </div>
+            <div v-if="!isEdit" :class="{disabled: selectGoodsCount === 0}" class="goPay">结算({{selectGoodsCount}})</div>
+            <div v-else @click="handleDel" :class="{disabled: selectGoodsCount === 0}" class="delete">删除</div>
+          </div>
+        </div>
     </div>
 
-    <div class="footer-fixed">
-      <div @click="toggleAllCheck" class="all-check">
-        <van-checkbox :value="isToggleCheck" icon-size="18"></van-checkbox>
-        全选
+    <div class="empty-cart" v-else>
+      <img src="@/assets/empty.png" alt="">
+      <div class="tips">
+        您的购物车是空的, 快去逛逛吧
       </div>
-
-      <div class="all-total">
-        <div class="price">
-          <span>合计：</span>
-          <span>¥ <i class="totalPrice">{{selectGoodsPrice}}</i></span>
-        </div>
-        <div v-if="!isEdit" :class="{disabled: selectGoodsCount === 0}" class="goPay">结算({{selectGoodsCount}})</div>
-        <div v-else @click="handleDel" :class="{disabled: selectGoodsCount === 0}" class="delete">删除</div>
-      </div>
+      <div class="btn" @click="$router.push('/')">去逛逛</div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -234,5 +245,30 @@ export default {
     }
   }
 
+}
+.empty-cart {
+  padding: 80px 30px;
+  img {
+    width: 140px;
+    height: 92px;
+    display: block;
+    margin: 0 auto;
+  }
+  .tips {
+    text-align: center;
+    color: #666;
+    margin: 30px;
+  }
+  .btn {
+    width: 110px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #fa2c20;
+    border-radius: 16px;
+    color: #fff;
+    display: block;
+    margin: 0 auto;
+  }
 }
 </style>
