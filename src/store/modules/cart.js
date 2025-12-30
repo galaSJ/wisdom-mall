@@ -38,7 +38,6 @@ export default {
         item.isChecked = true
       })
       context.commit('setCartList', list)
-      console.log(list)
     },
     // 更新购物车商品数量
     async changCountAction (context, { goodsId, goodsNum, goodsSkuId }) {
@@ -50,9 +49,27 @@ export default {
 
   },
   getters: {
+    // 商品全选
     isToggleCheck (state) {
       return state.cartList.every(item => item.isChecked)
+    },
+    // 商品选中列表
+    selectGoodsList (state) {
+      return state.cartList.filter(item => item.isChecked)
+    },
+    // 购物车商品数量
+    cartTotal (state) {
+      return state.cartList.reduce((sum, item) => sum + item.goods_num, 0)
+    },
+    // 购物车商品结算数量
+    selectGoodsCount (state, getters) {
+      return getters.selectGoodsList.reduce((sum, item) => sum + item.goods_num, 0)
+    },
+    // 商品合计价格
+    selectGoodsPrice (state, getters) {
+      return getters.selectGoodsList.reduce((sum, item) => sum + item.goods_num * item.goods.goods_price_min, 0).toFixed(2)
     }
+
   }
 
 }

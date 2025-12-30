@@ -3,7 +3,7 @@
     <van-nav-bar title="购物车" fixed />
     <!-- 购物车开头 -->
     <div class="cart-title">
-      <span class="all">共<i>4</i>件商品</span>
+      <span class="all">共<i>{{cartTotal}}</i>件商品</span>
       <span class="edit">
         <van-icon name="edit" />
         编辑
@@ -38,9 +38,9 @@
       <div class="all-total">
         <div class="price">
           <span>合计：</span>
-          <span>¥ <i class="totalPrice">99.99</i></span>
+          <span>¥ <i class="totalPrice">{{selectGoodsPrice}}</i></span>
         </div>
-        <div v-if="true" class="goPay">结算(5)</div>
+        <div v-if="true" class="goPay">结算({{selectGoodsCount}})</div>
         <div v-else class="delete">删除</div>
       </div>
     </div>
@@ -61,7 +61,7 @@ export default {
       return this.$store.getters.token
     },
     ...mapState('cart', ['cartList']),
-    ...mapGetters('cart', ['isToggleCheck'])
+    ...mapGetters('cart', ['isToggleCheck', 'cartTotal', 'selectGoodsPrice', 'selectGoodsCount'])
   },
   methods: {
     // 单选
@@ -75,7 +75,6 @@ export default {
     },
     // 更改商品数量
     changCount (goodsId, goodsNum, goodsSkuId) {
-      console.log(goodsId, goodsNum, goodsSkuId)
       this.$store.dispatch('cart/changCountAction', { goodsId, goodsNum, goodsSkuId })
     }
   },
