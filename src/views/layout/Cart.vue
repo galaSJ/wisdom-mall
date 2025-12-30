@@ -92,6 +92,7 @@ export default {
     changCount (goodsId, goodsNum, goodsSkuId) {
       this.$store.dispatch('cart/changCountAction', { goodsId, goodsNum, goodsSkuId })
     },
+    // 删除商品
     handleDel () {
       if (this.selectGoodsCount === 0) return false
       this.$store.dispatch('cart/removeSelectGoods')
