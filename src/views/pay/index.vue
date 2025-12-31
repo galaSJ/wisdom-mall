@@ -9,13 +9,13 @@
         <van-icon name="logistics" />
       </div>
 
-      <div class="info" v-if="true">
+      <div class="info" v-if="selectAddress?.address_id">
         <div class="info-content">
-          <span class="name">小红</span>
-          <span class="mobile">13811112222</span>
+          <span class="name">{{selectAddress.name}}&nbsp;</span>
+          <span class="mobile">{{selectAddress.phone}}</span>
         </div>
         <div class="info-address">
-          江苏省 无锡市 南长街 110号 504
+          {{longAddress}}
         </div>
       </div>
 
@@ -106,10 +106,19 @@ export default {
   created () {
     this.getAddressList()
   },
+  computed: {
+    selectAddress () {
+      return this.addressList[0] || {}
+    },
+    longAddress () {
+      const region = this.selectAddress.region
+      return region.province + region.city + region.region + this.selectAddress.detail
+    }
+  },
   methods: {
     async getAddressList () {
-      const res = await getAddressList()
-      console.log(res)
+      const { data: { list } } = await getAddressList()
+      this.addressList = list
     }
   }
 }
