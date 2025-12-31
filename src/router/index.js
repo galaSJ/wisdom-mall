@@ -11,6 +11,7 @@ import Cart from '@/views/layout/Cart.vue'
 import Category from '@/views/layout/Category.vue'
 import User from '@/views/layout/User.vue'
 import Home from '@/views/layout/Home.vue'
+import Address from '@/views/address'
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -66,6 +67,10 @@ const routes = [
     // 详情需要传入商品id
     path: '/prodetail/:id',
     component: Prodetail
+  },
+  {
+    path: '/address',
+    component: Address
   }
 ]
 
