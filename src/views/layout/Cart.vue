@@ -40,7 +40,7 @@
               <span>合计：</span>
               <span>¥ <i class="totalPrice">{{selectGoodsPrice}}</i></span>
             </div>
-            <div v-if="!isEdit" :class="{disabled: selectGoodsCount === 0}" class="goPay">结算({{selectGoodsCount}})</div>
+            <div v-if="!isEdit" @click="goPay" :class="{disabled: selectGoodsCount === 0}" class="goPay">结算({{selectGoodsCount}})</div>
             <div v-else @click="handleDel" :class="{disabled: selectGoodsCount === 0}" class="delete">删除</div>
           </div>
         </div>
@@ -65,6 +65,7 @@ export default {
   data () {
     return {
       isEdit: false // 编辑按钮状态
+
     }
   },
   created () {
@@ -76,7 +77,7 @@ export default {
       return this.$store.getters.token
     },
     ...mapState('cart', ['cartList']),
-    ...mapGetters('cart', ['isToggleCheck', 'cartTotal', 'selectGoodsPrice', 'selectGoodsCount'])
+    ...mapGetters('cart', ['isToggleCheck', 'selectGoodsList', 'cartTotal', 'selectGoodsPrice', 'selectGoodsCount'])
   },
   methods: {
     // 单选
@@ -98,6 +99,18 @@ export default {
       this.$store.dispatch('cart/removeSelectGoods')
       // 重置按钮状态
       this.isEdit = false
+    },
+    // 跳转结算页
+    goPay () {
+      if (this.selectGoodsCount > 0) {
+        this.$router.push({
+          path: '/pay',
+          query: {
+            mode: 'cart',
+            cartIds: this.selectGoodsList.map(item => item.id).join(',')
+          }
+        })
+      }
     }
   },
   watch: {
