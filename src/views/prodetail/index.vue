@@ -137,8 +137,8 @@
 import { getComments, getProductDetail } from '@/api/product'
 import defaultAvatar from '@/assets/default-avatar.png'
 import CountBox from '@/components/CountBox.vue'
-import { Dialog } from 'vant'
 import { addCart } from '@/api/cart'
+import loginConfirm from '@/mixins/loginConfirm'
 export default {
   name: 'ProDetail',
   data () {
@@ -194,27 +194,7 @@ export default {
     // 加入购物车
     async addCart () {
       // 判断token
-      if (!this.$store.getters.token) {
-        Dialog.confirm({
-          message: '加入购物车需要先登录',
-          title: '温馨提示',
-          confirmButtonText: '登录',
-          cancelButtonText: '取消'
-        }).then(() => {
-          // 跳转登录
-          this.$router.replace({
-            path: '/login',
-            query: {
-              // 获取完整路径
-              // 登录成功后,跳转回来使用
-              backUrl: this.$route.fullPath
-            }
-          })
-        }).catch(() => {
-
-        })
-        return false
-      }
+      if (this.loginConfirm()) return
       const { data: { cartTotal } } = await addCart(this.getGoodsId, this.addCount, this.detail.skuList[0].goods_sku_id)
       this.cartTotal = cartTotal
       this.$toast('加入购车成功')
@@ -223,6 +203,8 @@ export default {
     },
     // 跳转结算页
     goBuyNow () {
+      // 判断token
+      if (this.loginConfirm()) return
       this.$router.push({
         path: '/pay',
         query: {
@@ -236,7 +218,8 @@ export default {
   },
   components: {
     CountBox
-  }
+  },
+  mixins: [loginConfirm]
 
 }
 </script>
