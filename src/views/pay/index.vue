@@ -127,19 +127,35 @@ export default {
     // 商品id
     cartIds () {
       return this.$route.query.cartIds
+    },
+    // 获取立刻购买所需的参数
+    getBuyNowParams () {
+      return {
+        goodsId: this.$route.query.goodsId,
+        goodsNum: this.$route.query.goodsNum,
+        goodsSkuId: this.$route.query.goodsSkuId
+      }
     }
   },
   methods: {
+    // 获取地址列表
     async getAddressList () {
-      const { data: { list } } = await getAddressList()
-      this.addressList = list
+      try {
+        const { data: { list } } = await getAddressList()
+        this.addressList = list
+      } catch (error) {
+        this.$toast.fail('获取失败')
+      }
     },
+    // 获取订单列表
     async getOrderList () {
-      if (this.mode === 'cart') {
-        const { data: { order, personal } } = await checkOrder(this.mode, { cartIds: this.cartIds })
+      const params = this.mode === 'cart' ? { cartIds: this.cartIds } : this.getBuyNowParams
+      try {
+        const { data: { order, personal } } = await checkOrder(this.mode, params)
         this.order = order
         this.personal = personal
-        console.log(order)
+      } catch (error) {
+        this.$toast.fail('获取订单失败,请稍后重试')
       }
     }
   }

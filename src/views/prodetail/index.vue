@@ -125,7 +125,7 @@
         </div>
         <div class="showbtn" v-if="detail.stock_total > 0">
           <div class="btn" @click="addCart" v-if="mode === 'cart'">加入购物车</div>
-          <div class="btn now" @click="goPay" v-else>立刻购买</div>
+          <div class="btn now" @click="goBuyNow" v-else>立刻购买</div>
         </div>
         <div class="btn-none" v-else>该商品已抢完</div>
       </div>
@@ -221,9 +221,16 @@ export default {
       // 关闭弹层
       this.showPannel = false
     },
-    goPay () {
+    // 跳转结算页
+    goBuyNow () {
       this.$router.push({
-        path: '/pay'
+        path: '/pay',
+        query: {
+          mode: 'buyNow',
+          goodsId: this.getGoodsId,
+          goodsNum: this.addCount,
+          goodsSkuId: this.detail.skuList[0].goods_sku_id
+        }
       })
     }
   },
@@ -443,5 +450,10 @@ export default {
     background-color: #ee0a24;
     border-radius: 50%;
   }
+}
+.content{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
