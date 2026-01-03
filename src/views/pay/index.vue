@@ -9,13 +9,13 @@
         <van-icon name="logistics" />
       </div>
 
-      <div class="info" v-if="true">
+      <div class="info" v-if="selectAddress?.address_id">
         <div class="info-content">
-          <span class="name">小红</span>
-          <span class="mobile">13811112222</span>
+          <span class="name">{{selectAddress.name}}&nbsp;</span>
+          <span class="mobile">{{selectAddress.phone}}</span>
         </div>
         <div class="info-address">
-          江苏省 无锡市 南长街 110号 504
+          {{longAddress}}
         </div>
       </div>
 
@@ -31,31 +31,31 @@
     <!-- 订单明细 -->
     <div class="pay-list">
       <div class="list">
-        <div class="goods-item">
+        <div class="goods-item" v-for="item in order.goodsList" :key="item.goods_id">
             <div class="left">
-              <img src="http://cba.itlike.com/public/uploads/10001/20230321/8f505c6c437fc3d4b4310b57b1567544.jpg" alt="" />
+              <img :src="item.goods_image" alt="" />
             </div>
             <div class="right">
               <p class="tit text-ellipsis-2">
-                 三星手机 SAMSUNG Galaxy S23 8GB+256GB 超视觉夜拍系统 超清夜景 悠雾紫 5G手机 游戏拍照旗舰机s23
+                 {{item.goods_name}}
               </p>
               <p class="info">
-                <span class="count">x3</span>
-                <span class="price">¥9.99</span>
+                <span class="count">x{{item.total_num}}</span>
+                <span class="price">¥{{item.total_pay_price}}</span>
               </p>
             </div>
         </div>
       </div>
 
       <div class="flow-num-box">
-        <span>共 12 件商品，合计：</span>
-        <span class="money">￥1219.00</span>
+        <span>共 {{order.orderTotalNum}} 件商品，合计：</span>
+        <span class="money">￥{{order.orderTotalPrice}}</span>
       </div>
 
       <div class="pay-detail">
         <div class="pay-cell">
           <span>订单总金额：</span>
-          <span class="red">￥1219.00</span>
+          <span class="red">￥{{order.orderTotalPrice}}</span>
         </div>
 
         <div class="pay-cell">
@@ -74,7 +74,7 @@
       <div class="pay-way">
         <span class="tit">支付方式</span>
         <div class="pay-cell">
-          <span><van-icon name="balance-o" />余额支付（可用 ¥ 999919.00 元）</span>
+          <span><van-icon name="balance-o" />余额支付（可用 ¥ {{personal.balance}} 元）</span>
           <!-- <span>请先选择配送地址</span> -->
           <span class="red"><van-icon name="passed" /></span>
         </div>
@@ -88,7 +88,7 @@
 
     <!-- 底部提交 -->
     <div class="footer-fixed">
-      <div class="left">实付款：<span>￥999919</span></div>
+      <div class="left">实付款：<span>￥{{order.orderTotalPrice}}</span></div>
       <div class="tipsbtn">提交订单</div>
     </div>
   </div>
@@ -96,20 +96,67 @@
 
 <script>
 import { getAddressList } from '@/api/address'
+import { checkOrder } from '@/api/order'
 export default {
   name: 'PayIndex',
   data () {
     return {
-      addressList: []
+      addressList: [], // 收货地址列表
+      order: {}, // 订单
+      personal: {} // 个人信息
     }
   },
   created () {
+    this.getOrderList()
     this.getAddressList()
   },
+  computed: {
+    // 选中的收货地址
+    selectAddress () {
+      return this.addressList[0] || {}
+    },
+    // 完整的收货地址
+    longAddress () {
+      const region = this.selectAddress.region
+      return region.province + region.city + region.region + this.selectAddress.detail
+    },
+    // 结算方式
+    mode () {
+      return this.$route.query.mode
+    },
+    // 商品id
+    cartIds () {
+      return this.$route.query.cartIds
+    },
+    // 获取立刻购买所需的参数
+    getBuyNowParams () {
+      return {
+        goodsId: this.$route.query.goodsId,
+        goodsNum: this.$route.query.goodsNum,
+        goodsSkuId: this.$route.query.goodsSkuId
+      }
+    }
+  },
   methods: {
+    // 获取地址列表
     async getAddressList () {
-      const res = await getAddressList()
-      console.log(res)
+      try {
+        const { data: { list } } = await getAddressList()
+        this.addressList = list
+      } catch (error) {
+        this.$toast.fail('获取失败')
+      }
+    },
+    // 获取订单列表
+    async getOrderList () {
+      const params = this.mode === 'cart' ? { cartIds: this.cartIds } : this.getBuyNowParams
+      try {
+        const { data: { order, personal } } = await checkOrder(this.mode, params)
+        this.order = order
+        this.personal = personal
+      } catch (error) {
+        this.$toast.fail('获取订单失败,请稍后重试')
+      }
     }
   }
 }

@@ -125,7 +125,7 @@
         </div>
         <div class="showbtn" v-if="detail.stock_total > 0">
           <div class="btn" @click="addCart" v-if="mode === 'cart'">加入购物车</div>
-          <div class="btn now" @click="goPay" v-else>立刻购买</div>
+          <div class="btn now" @click="goBuyNow" v-else>立刻购买</div>
         </div>
         <div class="btn-none" v-else>该商品已抢完</div>
       </div>
@@ -137,8 +137,8 @@
 import { getComments, getProductDetail } from '@/api/product'
 import defaultAvatar from '@/assets/default-avatar.png'
 import CountBox from '@/components/CountBox.vue'
-import { Dialog } from 'vant'
 import { addCart } from '@/api/cart'
+import loginConfirm from '@/mixins/loginConfirm'
 export default {
   name: 'ProDetail',
   data () {
@@ -194,42 +194,32 @@ export default {
     // 加入购物车
     async addCart () {
       // 判断token
-      if (!this.$store.getters.token) {
-        Dialog.confirm({
-          message: '加入购物车需要先登录',
-          title: '温馨提示',
-          confirmButtonText: '登录',
-          cancelButtonText: '取消'
-        }).then(() => {
-          // 跳转登录
-          this.$router.replace({
-            path: '/login',
-            query: {
-              // 获取完整路径
-              // 登录成功后,跳转回来使用
-              backUrl: this.$route.fullPath
-            }
-          })
-        }).catch(() => {
-
-        })
-        return false
-      }
+      if (this.loginConfirm()) return
       const { data: { cartTotal } } = await addCart(this.getGoodsId, this.addCount, this.detail.skuList[0].goods_sku_id)
       this.cartTotal = cartTotal
       this.$toast('加入购车成功')
       // 关闭弹层
       this.showPannel = false
     },
-    goPay () {
+    // 跳转结算页
+    goBuyNow () {
+      // 判断token
+      if (this.loginConfirm()) return
       this.$router.push({
-        path: '/pay'
+        path: '/pay',
+        query: {
+          mode: 'buyNow',
+          goodsId: this.getGoodsId,
+          goodsNum: this.addCount,
+          goodsSkuId: this.detail.skuList[0].goods_sku_id
+        }
       })
     }
   },
   components: {
     CountBox
-  }
+  },
+  mixins: [loginConfirm]
 
 }
 </script>
@@ -443,5 +433,10 @@ export default {
     background-color: #ee0a24;
     border-radius: 50%;
   }
+}
+.content{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
