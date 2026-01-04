@@ -10,7 +10,7 @@
     <div class="content">
       <div class="address-card">
         <div class="card-inner">
-            <div class="address-item" v-for="item in addressList" :key="item.address_id">
+            <div class="address-item" v-for="item in sortList" :key="item.address_id">
               <div class="card-top">
                 <div class="name-phone">
                 <span class="name">{{item.name}}</span>
@@ -38,7 +38,8 @@
               <div class="card-bottom">
                 <div class="left">
                   <van-checkbox
-                    :value="item"
+                    :value="item.address_id === defaultAddressId"
+                    @click="changeDefault(item.address_id)"
                     checked-color="#ee0a24"
                     icon-size="18"
                   >默认</van-checkbox>
@@ -70,19 +71,28 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 export default {
   name: 'AddressPage',
   created () {
     this.getAddressList()
   },
   computed: {
-    ...mapState('address', ['addressList'])
+    ...mapState('address', ['defaultAddressId']),
+    ...mapGetters('address', ['sortList'])
   },
   methods: {
     // 获取收货地址列表
     getAddressList () {
       this.$store.dispatch('address/fetchAddressList')
+    },
+    // 修改默认收货地址
+    changeDefault (addressId) {
+      this.$store.dispatch('address/updateDefaultAddress', addressId)
+    },
+    // 获取默认收货地址id
+    getDefaultAddress () {
+      this.$store.dispatch('address/fetchDefaultAddrssId')
     }
   }
 
