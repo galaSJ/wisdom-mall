@@ -10,26 +10,26 @@
     <div class="content">
       <div class="address-card">
         <div class="card-inner">
-            <div class="address-item" v-for="item in 3" :key="item">
+            <div class="address-item" v-for="item in addressList" :key="item.address_id">
               <div class="card-top">
                 <div class="name-phone">
-                <span class="name">小万余</span>
-                  <span class="phone">18865329965</span>
+                <span class="name">{{item.name}}</span>
+                  <span class="phone">{{item.phone}}</span>
                 </div>
               </div>
 
               <div class="card-addr">
                 <div class="region">
-                  <span>广东省</span>
+                  <span>{{item.region.province}}</span>
                 </div>
                 <div class="region">
-                  <span>广州市</span>
+                  <span>{{item.region.city}}</span>
                 </div>
                 <div class="region">
-                  <span>天河区</span>
+                <span>{{item.region.region}}</span>
                 </div>
                 <div class="detail">
-                  <span>9999</span>
+                  <span>{{item.detail}}</span>
                 </div>
               </div>
 
@@ -70,8 +70,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  name: 'AddressPage'
+  name: 'AddressPage',
+  created () {
+    this.getAddressList()
+  },
+  computed: {
+    ...mapState('address', ['addressList'])
+  },
+  methods: {
+    // 获取收货地址列表
+    getAddressList () {
+      this.$store.dispatch('address/fetchAddressList')
+    }
+  }
 
 }
 </script>
