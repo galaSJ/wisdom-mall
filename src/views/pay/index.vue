@@ -82,28 +82,29 @@
 
       <!-- 买家留言 -->
       <div class="buytips">
-        <textarea placeholder="选填：买家留言（50字内）" name="" id="" cols="30" rows="10"></textarea>
+        <textarea v-model="remark" placeholder="选填：买家留言（50字内）" name="" id="" cols="30" rows="10"></textarea>
       </div>
     </div>
 
     <!-- 底部提交 -->
     <div class="footer-fixed">
       <div class="left">实付款：<span>￥{{order.orderTotalPrice}}</span></div>
-      <div class="tipsbtn">提交订单</div>
+      <div class="tipsbtn" @click="submitOrder">提交订单</div>
     </div>
   </div>
 </template>
 
 <script>
 import { getAddressList } from '@/api/address'
-import { checkOrder } from '@/api/order'
+import { checkOrder, submitOrder } from '@/api/order'
 export default {
   name: 'PayIndex',
   data () {
     return {
       addressList: [], // 收货地址列表
       order: {}, // 订单
-      personal: {} // 个人信息
+      personal: {}, // 个人信息
+      remark: '' // 留言
     }
   },
   created () {
@@ -156,6 +157,19 @@ export default {
         this.personal = personal
       } catch (error) {
         this.$toast.fail('获取订单失败,请稍后重试')
+      }
+    },
+    // 提交订单
+    async submitOrder () {
+      const params = this.mode === 'cart'
+        ? { cartIds: this.cartIds, remark: this.remark }
+        : { remark: this.remark, ...this.getBuyNowParams }
+      try {
+        await submitOrder(this.mode, params)
+        this.$toast.success('支付成功')
+        this.$router.replace('/myorder')
+      } catch (error) {
+        this.$toast.fail('支付失败')
       }
     }
   }

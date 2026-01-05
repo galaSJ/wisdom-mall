@@ -28,3 +28,28 @@ export const checkOrder = (mode, params) => {
     }
   })
 }
+
+/**
+ * 提交并创建订单
+ * * @param {'cart'|'buyNow'} mode - 下单模式：'cart' 购物车下单，'buyNow' 立即购买
+ * @param {Object} params - 订单提交参数
+ * @param {string} [params.cartIds] - 模式为 'cart' 时必传，购物车记录 ID (多个逗号隔开)
+ * @param {string} [params.goodsId] - 模式为 'buyNow' 时必传，商品 ID
+ * @param {number} [params.goodsNum] - 模式为 'buyNow' 时必传，购买数量
+ * @param {string} [params.goodsSkuId] - 模式为 'buyNow' 时必传，规格 ID
+ * @param {string} [params.remark] - 订单买家留言
+ * * @returns {Promise<any>} 返回包含订单 ID (orderId) 和支付相关信息的 Promise 对象
+ * * @example
+ * // 购物车下单示例
+ * submitOrder('cart', { cartIds: '771,772', remark: '请尽快发货' })
+ */
+export const submitOrder = (mode, params) => {
+  return request.post('/checkout/submit', {
+    mode,
+    delivery: '10', // 物流配送方式 10配送 20自提
+    couponId: '0', // 优惠券id
+    isUsePoints: 0, // 是否使用积分
+    payType: 10, // 支付余额
+    ...params
+  })
+}
