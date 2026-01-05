@@ -3,10 +3,10 @@
     <van-nav-bar fixed title="订单结算台" left-arrow @click-left="$router.go(-1)" />
 
     <!-- 地址相关 -->
-    <div class="address">
+    <div class="address" @click="$router.push('/address')">
 
       <div class="left-icon">
-        <van-icon name="logistics" />
+        <van-icon :name="selectAddress?.address_id ? 'location-o' : 'logistics'" />
       </div>
 
       <div class="info" v-if="selectAddress?.address_id">
@@ -23,7 +23,7 @@
         请选择配送地址
       </div>
 
-      <div class="right-icon" @click="$router.push('/address')">
+      <div class="right-icon">
         <van-icon name="arrow" />
       </div>
     </div>

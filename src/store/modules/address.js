@@ -14,7 +14,7 @@ export default {
     // 设置收货地址列表
     setAddressList (state, newList) {
       state.addressList = newList
-      console.log(newList)
+      // console.log(newList)
     },
     // 设置默认收货地址id
     setDefaultAddressId (state, id) {
