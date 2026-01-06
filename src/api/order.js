@@ -53,3 +53,26 @@ export const submitOrder = (mode, params) => {
     ...params
   })
 }
+
+/**
+ * 获取我的订单列表
+ * * @param {'all'|'payment'|'delivery'|'received'|'comment'} dataType - 订单状态类型：
+ * - 'all': 全部订单
+ * - 'payment': 待付款
+ * - 'delivery': 待发货
+ * - 'received': 待收货
+ * - 'comment': 待评价
+ * @param {number} page - 当前查询的页码
+ * @returns {Promise<any>} 返回包含订单列表、分页信息（total, last_page）的 Promise 对象
+ * * @example
+ * // 获取第一页待付款订单
+ * getMyOrderList('payment', 1)
+ */
+export const getMyOrderList = (dataType, page) => {
+  return request.get('/order/list', {
+    params: {
+      dataType,
+      page
+    }
+  })
+}
