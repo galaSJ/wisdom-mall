@@ -14,5 +14,14 @@ export default {
       // 本地持久化存储
       setInfo(newUserInfo)
     }
+  },
+  actions: {
+    logout (context) {
+      // 重置vuex用户信息
+      context.commit('setUserInfo', {})
+      // 重置vuex购车信息
+      // 跨模块调用
+      context.commit('cart/setCartList', [], { root: true })
+    }
   }
 }
